@@ -56,6 +56,7 @@ function bootstrap() {
   // await bot.api.setMyCommands([
   //   { command: 'start', description: 'Запустить бота' }
   // ])
+  bot.api.setMyCommands([{ command: 'start', description: 'Запустить бота' }])
 
   // bot.use(
   //   session({
