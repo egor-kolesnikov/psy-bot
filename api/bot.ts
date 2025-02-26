@@ -77,7 +77,7 @@ if (!db) throw new Error('Не обнаружен .env')
 // })
 
 bot.use(conversations())
-
+1
 async function depressionTest(
   conversation: TestConversation,
   ctx: TestContext
