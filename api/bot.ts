@@ -1,6 +1,6 @@
 import { Bot, Context, session, SessionFlavor, webhookCallback } from 'grammy'
-import mongoose from 'mongoose'
-import { MongoDBAdapter, ISession } from '@grammyjs/storage-mongodb'
+// import mongoose from 'mongoose'
+// import { MongoDBAdapter, ISession } from '@grammyjs/storage-mongodb'
 import { Menu } from '@grammyjs/menu'
 import {
   type Conversation,
@@ -19,7 +19,8 @@ const db = process.env.DB
 const token = process.env.TOKEN
 const id = process.env.ID
 
-type MyContext = ConversationFlavor<Context & SessionFlavor<SessionData>>
+// type MyContext = ConversationFlavor<Context & SessionFlavor<SessionData>>
+type MyContext = ConversationFlavor<Context>
 
 type TestContext = HydrateFlavor<Context>
 type TestConversation = Conversation<MyContext, TestContext>
@@ -44,38 +45,38 @@ if (!token) throw new Error('Не обнаружен .env')
 
 const bot = new Bot<MyContext>(token)
 
-async function bootstrap() {
+function bootstrap() {
   if (!db) throw new Error('Не обнаружен .env')
 
-  await mongoose.connect(db)
+  // await mongoose.connect(db)
 
-  const collection = mongoose.connection.db?.collection<ISession>('sessions')
-  if (!collection) throw new Error('Что-то пошло не так')
+  // const collection = mongoose.connection.db?.collection<ISession>('sessions')
+  // if (!collection) throw new Error('Что-то пошло не так')
 
-  await bot.api.setMyCommands([
-    { command: 'start', description: 'Запустить бота' }
-  ])
+  // await bot.api.setMyCommands([
+  //   { command: 'start', description: 'Запустить бота' }
+  // ])
 
-  bot.use(
-    session({
-      storage: new MongoDBAdapter({ collection }),
-      initial: () => ({ tests: [] })
-    })
-  )
+  // bot.use(
+  //   session({
+  //     storage: new MongoDBAdapter({ collection }),
+  //     initial: () => ({ tests: [] })
+  //   })
+  // )
 
-  bot.use(async (ctx, next) => {
-    if (!ctx?.session?.user_info && ctx.from) {
-      const { id, first_name, is_bot, last_name, username } = ctx.from
-      ctx.session.user_info = {
-        id,
-        first_name,
-        is_bot,
-        last_name,
-        username
-      }
-    }
-    await next()
-  })
+  // bot.use(async (ctx, next) => {
+  //   if (!ctx?.session?.user_info && ctx.from) {
+  //     const { id, first_name, is_bot, last_name, username } = ctx.from
+  //     ctx.session.user_info = {
+  //       id,
+  //       first_name,
+  //       is_bot,
+  //       last_name,
+  //       username
+  //     }
+  //   }
+  //   await next()
+  // })
 
   bot.use(conversations())
 
@@ -139,13 +140,13 @@ async function bootstrap() {
       }
     }
 
-    await conversation.external(ctx => {
-      ctx.session.tests.push({
-        total,
-        answers: answersScores,
-        type: 'depression'
-      })
-    })
+    // await conversation.external(ctx => {
+    //   ctx.session.tests.push({
+    //     total,
+    //     answers: answersScores,
+    //     type: 'depression'
+    //   })
+    // })
 
     await setDelay(2000)
 
