@@ -1,4 +1,4 @@
-import { Bot, Context, session, SessionFlavor } from 'grammy'
+import { Bot, Context, session, SessionFlavor, webhookCallback } from 'grammy'
 import mongoose from 'mongoose'
 import { MongoDBAdapter, ISession } from '@grammyjs/storage-mongodb'
 import { Menu } from '@grammyjs/menu'
@@ -39,15 +39,18 @@ interface SessionData {
   tests: Array<TTestStorage>
 }
 
+if (!token) throw new Error('Не обнаружен .env')
+
+const bot = new Bot<MyContext>(token)
+
 async function bootstrap() {
-  if (!db || !token) throw new Error('Не обнаружен .env')
+  if (!db) throw new Error('Не обнаружен .env')
 
   await mongoose.connect(db)
 
   const collection = mongoose.connection.db?.collection<ISession>('sessions')
   if (!collection) throw new Error('Что-то пошло не так')
 
-  const bot = new Bot<MyContext>(token)
   await bot.api.setMyCommands([
     { command: 'start', description: 'Запустить бота' }
   ])
@@ -202,8 +205,6 @@ async function bootstrap() {
       reply_markup: menu
     })
   })
-
-  bot.start()
 }
 
-bootstrap()
+export default webhookCallback(bot, 'https')
